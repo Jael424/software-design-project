@@ -61,9 +61,29 @@ def execute_command_callback(command, car_controller):
 
     # 송국선
     elif command == "TRUNK_OPEN":
-        car_controller.open_trunk()  # 트렁크 열기
+        # car_controller.open_trunk()  # 트렁크 열기
+        trunk_open_condition_check(car_controller)
     elif command == "TRUNK_CLOSE":
-        car_controller.close_trunk()  # 트렁크 닫기
+        # car_controller.close_trunk()  # 트렁크 닫기
+        trunk_close_condition_check(car_controller)
+
+
+def can_operate_trunk(car_controller, trunk_status):
+    return (
+        car_controller.get_speed() == 0 and
+        not car_controller.get_lock_status() and
+        car_controller.get_trunk_status() == trunk_status
+    )
+
+
+def trunk_open_condition_check(car_controller):
+    if can_operate_trunk(car_controller, trunk_status=True):
+        car_controller.car.open_trunk()
+
+
+def trunk_close_condition_check(car_controller):
+    if can_operate_trunk(car_controller, trunk_status=False):
+        car_controller.car.close_trunk()
 
 
 # 파일 경로를 입력받는 함수
