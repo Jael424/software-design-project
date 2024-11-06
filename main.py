@@ -37,15 +37,25 @@ def execute_command_callback(command, car_controller):
                 car_controller.car.lock_left_door()  # 왼쪽문 잠금
 
     elif command == "LEFT_DOOR_UNLOCK":
+        # 차량이 잠겨있지 않고, 왼쪽문이 닫혀있고, 속도가 0일 때만 왼쪽문 잠금해제
         if not car_controller.get_lock_status() == "LOCKED":
             if car_controller.get_left_door_status() == "CLOSED":
-                if (car_controller.get_speed() <= 20):
+                if (car_controller.get_speed() == 0):
                     car_controller.unlock_left_door()  # 왼쪽문 잠금해제
 
     elif command == "RIGHT_DOOR_LOCK":
-        car_controller.lock_right_door()  # 오른쪽문 잠금
+        # 차량이 잠겨있지 않고, 오른쪽문이 닫혀있을 때만 오른쪽문 잠금
+        if not car_controller.get_lock_status() == "LOCKED":
+            if car_controller.get_right_door_status() == "CLOSED":
+                car_controller.lock_right_door()
+
     elif command == "RIGHT_DOOR_UNLOCK":
-        car_controller.unlock_right_door()  # 오른쪽문 잠금해제
+        # 차량이 잠겨있지 않고, 오른쪽문이 닫혀있고, 속도가 0일 때만 오른쪽문 잠금해제
+        if not car_controller.get_lock_status() == "LOCKED":
+            if car_controller.get_right_door_status() == "CLOSED":
+                if (car_controller.get_speed() == 0):
+                    car_controller.unlock_right_door()  # 왼쪽문 잠금해제
+
 
 
     # 한재일
