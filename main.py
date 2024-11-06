@@ -15,6 +15,8 @@ def execute_command_callback(command, car_controller):
     # 송혜주
     elif command == "ACCELERATE":
         car_controller.accelerate()  # 속도 +10
+        if (car_controller.get_speed() > 20):
+            car_controller.car.lock_left_door()
     elif command == "BRAKE":
         car_controller.brake()  # 속도 -10
 
@@ -28,7 +30,9 @@ def execute_command_callback(command, car_controller):
 
     # 이재헌
     elif command == "LEFT_DOOR_LOCK":
-        car_controller.lock_left_door()  # 왼쪽문 잠금
+        if not car_controller.get_lock_status() == "LOCKED":
+            if car_controller.get_left_door_status() == "CLOSED":
+                car_controller.car.lock_left_door()  # 왼쪽문 잠금
     elif command == "LEFT_DOOR_UNLOCK":
         car_controller.unlock_left_door()  # 왼쪽문 잠금해제
     elif command == "RIGHT_DOOR_LOCK":
