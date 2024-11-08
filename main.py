@@ -62,8 +62,6 @@ def execute_command_callback(command, car_controller):
 
 
     # 한재일
-    
-    
     elif command == "LEFT_DOOR_OPEN":
         # 속도가 0이며, 차량 전체 잠금이 해제되어 있어야 합니다.
         # 차량 문이 닫혀 있어야 하고, 문이 잠겨 있지 않아야 합니다.
