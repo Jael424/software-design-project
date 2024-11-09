@@ -10,8 +10,19 @@ from gui import CarSimulatorGUI
 def execute_command_callback(command, car_controller):
     # 임찬우
     if command == "ENGINE_BTN":
-        car_controller.toggle_engine()  # 시동 ON / OFF
-        print("test pull request")
+        # 차량이 전체 잠금 상태가 아니면 엔진을 킬 수 있음 
+        if not car_controller.get_lock_status():
+            car_controller.toggle_engine()  # 시동 ON 
+            
+        
+        # 엔진이 켜져 있을 때 속도가 0인지 확인 후 엔진을 끌 수 있는지 판단
+        if car_controller.get_engine_status():
+            if car_controller.get_speed() != 0:
+                car_controller.toggle_engine()  # 시동 OFF 
+                
+        
+        
+        
         
 
     # 송혜주
