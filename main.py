@@ -26,19 +26,29 @@ def execute_command_callback(command, car_controller):
             if car_controller.get_speed() == 0:
                 car_controller.toggle_engine()  # 시동 OFF 가능
                 
-        
-        
-        
-        
-
     # 송혜주
     elif command == "ACCELERATE":
-        car_controller.accelerate()  # 속도 +10
-        if (car_controller.get_speed() >= 20):  # 속도가 20일 때 차 문을 잠그도록 함.
-            car_controller.car.lock_left_door()
-            car_controller.car.lock_right_door()
+        if (car_controller.unlock_vehicle() and
+            car_controller.get_engine_status() == "ON" and
+            car_controller.get_left_door_status() == "CLOSED" and
+            car_controller.get_right_door_status() == "CLOSED" and
+            car_controller.get_speed() <= 120):
+            
+            car_controller.accelerate()  # 속도 +10
+            if (car_controller.get_speed() >= 20):  # 속도가 20일 때 차 문을 잠그도록 함.
+                car_controller.car.lock_left_door()
+                car_controller.car.lock_right_door()
+
+            print(f"현재 속도 : {car_controller.get_speed()} km/h")
+
     elif command == "BRAKE":
-        car_controller.brake()  # 속도 -10
+        if (car_controller.unlock_vehicle() and
+            car_controller.get_engine_status() == "ON" and
+            car_controller.get_speed() > 0
+            
+            car_controller.brake()  # 속도 -10
+
+            print(f"현재 속도 : {car_controller.get_speed()} km/h")
 
 
     # 주정윤
