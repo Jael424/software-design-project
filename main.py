@@ -11,7 +11,7 @@ def execute_command_callback(command, car_controller):
     # 임찬우
     if command == "ENGINE_BTN":
         car_controller.toggle_engine()  # 시동 ON / OFF
-        print("testing pr")
+        print("test pull request")
         
 
     # 송혜주
