@@ -1,4 +1,7 @@
 import threading
+
+from sympy.codegen.ast import continue_
+
 from car import Car
 from car_controller import CarController
 from gui import CarSimulatorGUI
@@ -40,9 +43,17 @@ def execute_command_callback(command, car_controller):
 
     # 주정윤
     elif command == "LOCK":
-        car_controller.lock_vehicle()  # 차량잠금
+        # 차량의 상태가 'unlock'이며, 속도가 10미만일 때만 차량 잠금 가능
+        if car_controller.get_lock_status() != "lock" and car_controller.get_speed() < 10:
+            car_controller.lock_vehicle() # 차량잠금
+        else:
+            car_controller.unlock_vehicle()
     elif command == "UNLOCK":
-        car_controller.unlock_vehicle()  # 차량잠금해제
+        # 차량의 상태가 'lock'일 때만 차량 잠금해제 가능
+        if car_controller.get_lock_status() != "unlock":
+            car_controller.unlock_vehicle()  # 차량잠금해제
+        else:
+            car_controller.lock_vehicle()
 
 
     # 이재헌
