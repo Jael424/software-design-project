@@ -221,6 +221,23 @@ def execute_command_callback(command, car_controller):
         # car_controller.close_trunk()  # 트렁크 닫기
         trunk_close_condition_check(car_controller)
 
+        # SOS 기능 추가
+    elif command == "SOS":
+        # 1. 속도를 0으로 설정
+        if car_controller.get_speed() != 0:
+            for i in range(car_controller.get_speed()):
+                car_controller.brake()
+
+        # 2. 모든 문의 잠금을 해제하고 열기
+        car_controller.unlock_vehicle()
+        car_controller.unlock_left_door()
+        car_controller.unlock_right_door()
+        car_controller.open_left_door()
+        car_controller.open_right_door()
+
+        # 3. 트렁크 열기
+        car_controller.open_trunk()
+
 
 def can_operate_trunk(car_controller, trunk_status):
     return (
