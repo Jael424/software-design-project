@@ -22,28 +22,19 @@ def execute_command_callback(command, car_controller):
     # 임찬우
     if command == "ENGINE_BTN":
         # 차량이 전체 잠금 상태가 아니면 엔진을 킬 수 있음
-        print(car_controller.get_lock_status())
 
         if car_controller.get_lock_status() == False:
             if car_controller.get_engine_status() == False:
-                print("엔진 켜짐")
                 car_controller.toggle_engine()
 
             # 엔진이 켜져 있을 때 속도가 0인지 확인 후 엔진을 끌 수 있는지 판단
             elif car_controller.get_engine_status() == True:
-                print("엔진 꺼짐")
                 if car_controller.get_speed() == 0:
                     car_controller.toggle_engine()  # 시동 OFF 가능
 
 
     # 송혜주
     elif command == "ACCELERATE":
-        print(car_controller.get_lock_status())
-        print(car_controller.get_engine_status())
-        print(car_controller.get_left_door_status())
-        print(car_controller.get_right_door_status())
-        print(car_controller.get_speed())
-
         if (car_controller.get_lock_status() == False and
             car_controller.get_engine_status() == True and
             car_controller.get_left_door_status() == "CLOSED" and
@@ -56,7 +47,6 @@ def execute_command_callback(command, car_controller):
                 car_controller.car.lock_left_door()
                 car_controller.car.lock_right_door()
 
-            print(f"현재 속도 : {car_controller.get_speed()} km/h")
 
 
     elif command == "BRAKE":
@@ -64,9 +54,6 @@ def execute_command_callback(command, car_controller):
             car_controller.get_engine_status() == True and
             car_controller.get_speed() > 0):
             car_controller.brake()  # 속도 -10
-
-            print(f"현재 속도 : {car_controller.get_speed()} km/h")
-
 
     # 주정윤
     elif command == "LOCK":
@@ -84,24 +71,17 @@ def execute_command_callback(command, car_controller):
     # 이재헌
     elif command == "LEFT_DOOR_LOCK":
         # 차량이 잠겨있지 않고, 왼쪽문이 닫혀있을 때만 왼쪽문 잠금
-        print("왼쪽 문 잠금" + str(car_controller.get_lock_status()))
-
         cur_left_door_lock_condition = set()
 
         cur_left_door_lock_condition.add(car_controller.get_lock_status())
         cur_left_door_lock_condition.add(car_controller.get_left_door_lock())
         cur_left_door_lock_condition.add(car_controller.get_left_door_status())
 
-        print("LEFT_DOOR_LOCK")
-        print(cur_left_door_lock_condition)
-
         if cur_left_door_lock_condition == DOOR_LOCK_CONDITION:
             car_controller.car.lock_left_door()  # 왼쪽문 잠금
 
     elif command == "LEFT_DOOR_UNLOCK":
         # 차량이 잠겨있지 않고, 왼쪽문이 닫혀있고, 속도가 0일 때만 왼쪽문 잠금해제
-        print("왼쪽 문 잠금 해제" + str(car_controller.get_lock_status()))
-
         cur_left_door_unlock_condition = set()
         cur_left_door_unlock_condition.add(car_controller.get_lock_status())
         cur_left_door_unlock_condition.add(car_controller.get_left_door_lock())
@@ -114,8 +94,6 @@ def execute_command_callback(command, car_controller):
 
     elif command == "RIGHT_DOOR_LOCK":
         # 차량이 잠겨있지 않고, 오른쪽문이 닫혀있을 때만 오른쪽문 잠금
-        print("오른쪽 문 잠금" + str(car_controller.get_lock_status()))
-
         cur_right_door_lock_condition = set()
         cur_right_door_lock_condition.add(car_controller.get_lock_status())
         cur_right_door_lock_condition.add(car_controller.get_right_door_lock())
@@ -127,9 +105,6 @@ def execute_command_callback(command, car_controller):
 
     elif command == "RIGHT_DOOR_UNLOCK":
         # 차량이 잠겨있지 않고, 오른쪽문이 닫혀있고, 속도가 0일 때만 오른쪽문 잠금해제
-
-        print("오른쪽 문 잠금 해제" + str(car_controller.get_lock_status()))
-
         cur_right_door_unlock_condition = set()
         cur_right_door_unlock_condition.add(car_controller.get_lock_status())
         cur_right_door_unlock_condition.add(
@@ -165,17 +140,12 @@ def execute_command_callback(command, car_controller):
         # door_close_set_of_precondition = {False, "OPENED"} <- 차량 문 닫기 동작의 필요 차량 상태를 미리 저장한 집합입니다.
 
         cur_car_status_set_for_door_close = set()  # 동작을 위해 필요한 차량의 현재 상태를 저장하기 위한 집합입니다.
-
         cur_car_status_set_for_door_close.add(car_controller.get_lock_status())
-        print(car_controller.get_lock_status())
         cur_car_status_set_for_door_close.add(
             car_controller.get_left_door_status())
         # 차량의 전체 잠금 상태, 문 상태를 집합에 저장합니다.
 
-        print(cur_car_status_set_for_door_close)
-        print(DOOR_CLOSE_CONDITION)
         if cur_car_status_set_for_door_close == DOOR_CLOSE_CONDITION:  # 차량의 현재 상태 집합과 동작의 필요 차량 상태 집합이 같은지 확인합니다.
-            print("차량 문 닫기")
             car_controller.close_left_door()  # 왼쪽문 닫기
 
 
