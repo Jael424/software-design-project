@@ -1,5 +1,7 @@
 import threading
 import unittest
+import argparse
+import sys
 
 from car import Car
 from car_controller import CarController
@@ -503,21 +505,26 @@ def file_input_thread(gui):
 # 메인 실행
 # -> 가급적 main login은 수정하지 마세요.
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true", help="Run in test mode")
+    args = parser.parse_args()
+
     car = Car()
     car_controller = CarController(car)
 
-    # GUI는 메인 스레드에서 실행
-    gui = CarSimulatorGUI(car_controller,
-                          lambda command: execute_command_callback(command,
-                                                                   car_controller))
+    if args.test:
+        unittest.main(argv=[sys.argv[0]])
 
-    # 파일 입력 스레드는 별도로 실행하여, GUI와 병행 처리
-    input_thread = threading.Thread(target=file_input_thread, args=(gui,))
-    input_thread.daemon = True  # 메인 스레드가 종료되면 서브 스레드도 종료되도록 설정
-    input_thread.start()
+    else:
+        # GUI는 메인 스레드에서 실행
+        gui = CarSimulatorGUI(car_controller,
+                              lambda command: execute_command_callback(command,
+                                                                       car_controller))
 
-    # GUI 시작 (메인 스레드에서 실행)
-    gui.start()
+        # 파일 입력 스레드는 별도로 실행하여, GUI와 병행 처리
+        input_thread = threading.Thread(target=file_input_thread, args=(gui,))
+        input_thread.daemon = True  # 메인 스레드가 종료되면 서브 스레드도 종료되도록 설정
+        input_thread.start()
 
-    # 테스트 실행
-    unittest.main()
+        # GUI 시작 (메인 스레드에서 실행)
+        gui.start()
