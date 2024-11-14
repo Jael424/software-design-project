@@ -478,12 +478,12 @@ def can_operate_trunk(car_controller, trunk_status):
 
 def trunk_open_condition_check(car_controller):
     if can_operate_trunk(car_controller, trunk_status=True):
-        car_controller.car.open_trunk()
+        car_controller.open_trunk()
 
 
 def trunk_close_condition_check(car_controller):
     if can_operate_trunk(car_controller, trunk_status=False):
-        car_controller.car.close_trunk()
+        car_controller.close_trunk()
 
 
 # 파일 경로를 입력받는 함수
