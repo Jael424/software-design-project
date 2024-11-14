@@ -5,6 +5,322 @@ from car import Car
 from car_controller import CarController
 from gui import CarSimulatorGUI
 
+
+class TestSOSFunctionality(unittest.TestCase):
+
+    def test_sos_functionality(self):
+        car_controller = CarController(Car())
+        # SOS 신호 보내기
+        execute_command_callback("SOS", car_controller)
+
+        # 테스트 assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 차량이 잠겨 있을 때 SOS 호출 테스트
+    def test_sos_when_locked(self):
+        car_controller = CarController(Car())
+        car_controller.lock_vehicle()  # 차량 잠금
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+        # 차량이 잠겨 있지 않을 때 SOS 호출 테스트
+
+    def test_sos_when_unlocked_and_speed_one(self):
+        car_controller = CarController(Car())
+        car_controller.unlock_vehicle()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 엔진이 켜져 있을 때 SOS 호출 테스트
+    def test_sos_when_engine_on(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        car_controller.toggle_engine()  # 엔진 켜기
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 엔진이 꺼져 있을 때 SOS 호출 테스트
+    def test_sos_when_engine_off(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        if (car_controller.get_engine_status() == True):
+            car_controller.toggle_engine()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 문이 열려 있을 때 SOS 호출 테스트
+    def test_sos_when_doors_open(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        car_controller.open_left_door()
+        car_controller.open_right_door()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 문이 닫혀 있을 때 SOS 호출 테스트
+    def test_sos_when_doors_locked(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        car_controller.close_left_door()
+        car_controller.close_right_door()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 문이 잠겨 있을 때 SOS 호출 테스트
+    def test_sos_when_doors_locked(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        car_controller.lock_left_door()
+        car_controller.lock_right_door()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 문이 잠겨 있지 않을 때 SOS 호출 테스트
+    def test_sos_when_doors_unlocked(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        car_controller.unlock_left_door()
+        car_controller.unlock_right_door()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 트렁크가 열려 있을 때 SOS 호출 테스트
+    def test_sos_when_trunk_open(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        car_controller.open_trunk()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 트렁크가 닫혀 있을 때 SOS 호출 테스트
+    def test_sos_when_trunk_closed(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        car_controller.close_trunk()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 속도가 0이 아닐 때 SOS 호출 테스트
+    def test_sos_when_speed_not_zero(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        car_controller.accelerate()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+    # 속도가 120을 넘어갈 때 SOS 호출 테스트
+    def test_sos_when_speed_over_120(self):
+        car_controller = CarController(Car())
+
+        car_controller.unlock_vehicle()
+        for i in range(13):
+            car_controller.accelerate()
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+        self.assertFalse(car_controller.get_trunk_status())
+
+
+class TestLockDoorFunctionality(unittest.TestCase):
+    def test_lock_door_functionality(self):
+        car_controller = CarController(Car())
+
+        execute_command_callback("UNLOCK", car_controller)
+
+        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
+        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
+
+        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
+        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
+
+        execute_command_callback("UNLOCK", car_controller)
+
+        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+
+        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+
+    # 차량의 속도가 20을 넘어갈 때 문이 잠겼는지 잠금 테스트
+    def test_auto_lock_doors_on_speed(self):
+        car_controller = CarController(Car())
+
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
+        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("ACCELERATE", car_controller)
+        execute_command_callback("ACCELERATE", car_controller)
+        execute_command_callback("ACCELERATE", car_controller)
+        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
+
+    # 속도가 0일 때 문 잠금 해제 테스트
+    def test_unlock_doors_at_zero_speed(self):
+        car_controller = CarController(Car())
+
+        # 속도가 0일 때 문 잠금 해제
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
+        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
+        self.assertEqual(car_controller.get_speed(), 0)
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+
+        # 속도가 0이 아닐때 문 잠금 해제 불가능
+        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
+        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("ACCELERATE", car_controller)
+        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
+        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
+        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
+
+    # 차량이 잠겨 있을 때 문 잠금, 잠금해제 불가능 테스트
+    def test_lock_doors_when_vehicle_is_locked(self):
+        car_controller = CarController(Car())
+        # 차량 잠금 상태에서 잠금, 잠금해제 불가능
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
+        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
+        execute_command_callback("LOCK", car_controller)
+        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
+        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
+        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
+
+    # 문이 닫혀있을 때만 잠금 가능 테스트
+    def test_lock_doors_when_doors_are_closed(self):
+        car_controller = CarController(Car())
+
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("LEFT_DOOR_CLOSE", car_controller)
+        execute_command_callback("RIGHT_DOOR_CLOSE", car_controller)
+        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
+        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
+        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
+
+        # 문이 닫혀있지 않을 때 잠금 불가능
+        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
+        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
+        execute_command_callback("LEFT_DOOR_OPEN", car_controller)
+        execute_command_callback("RIGHT_DOOR_OPEN", car_controller)
+        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
+        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
+        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
+        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+
+
 # execute_command를 제어하는 콜백 함수
 # -> 이 함수에서 시그널을 입력받고 처리하는 로직을 구성하면, 알아서 GUI에 연동이 됩니다.
 
@@ -264,110 +580,3 @@ if __name__ == "__main__":
 
     # 테스트 실행
     unittest.main()
-
-
-class TestSOSFunctionality(unittest.TestCase):
-    def test_sos_functionality(self):
-        car_controller = CarController(Car())
-
-        # SOS 신호 보내기
-        execute_command_callback("SOS", car_controller)
-
-        # 테스트 assertions
-        self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
-        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
-        self.assertFalse(car_controller.get_trunk_status())
-
-
-class TestLockDoorFunctionality(unittest.TestCase):
-    def test_lock_door_functionality(self):
-        car_controller = CarController(Car())
-
-        execute_command_callback("UNLOCK", car_controller)
-
-        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
-        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
-
-        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
-        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
-
-    def test_unlock_door_functionality(self):
-        car_controller = CarController(Car())
-
-        execute_command_callback("UNLOCK", car_controller)
-
-        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
-        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
-
-        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
-        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
-
-    def test_auto_lock_doors_on_speed(self):
-        car_controller = CarController(Car())
-
-        execute_command_callback("UNLOCK", car_controller)
-        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
-        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
-        execute_command_callback("ENGINE_BTN", car_controller)
-        execute_command_callback("ACCELERATE", car_controller)
-        execute_command_callback("ACCELERATE", car_controller)
-        execute_command_callback("ACCELERATE", car_controller)
-        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
-        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
-
-    def test_unlock_doors_at_zero_speed(self):
-        car_controller = CarController(Car())
-
-        # 속도가 0일 때 문 잠금 해제
-        execute_command_callback("UNLOCK", car_controller)
-        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
-        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
-        self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
-        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
-
-        # 속도가 0이 아닐때 문 잠금 해제 불가능
-        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
-        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
-        execute_command_callback("ENGINE_BTN", car_controller)
-        execute_command_callback("ACCELERATE", car_controller)
-        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
-        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
-        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
-        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
-
-    def test_lock_doors_when_vehicle_is_locked(self):
-        car_controller = CarController(Car())
-        # 차량 잠금 상태에서 잠금, 잠금해제 불가능
-        execute_command_callback("UNLOCK", car_controller)
-        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
-        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
-        execute_command_callback("LOCK", car_controller)
-        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
-        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
-        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
-        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
-
-    def test_lock_doors_when_doors_are_closed(self):
-        car_controller = CarController(Car())
-        # 문이 닫혀있을 때만 잠금 가능
-        execute_command_callback("UNLOCK", car_controller)
-        execute_command_callback("LEFT_DOOR_CLOSE", car_controller)
-        execute_command_callback("RIGHT_DOOR_CLOSE", car_controller)
-        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
-        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
-        self.assertEqual(car_controller.get_left_door_lock(), "LOCKED")
-        self.assertEqual(car_controller.get_right_door_lock(), "LOCKED")
-
-        # 문이 닫혀있지 않을 때 잠금 불가능
-        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
-        execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
-        execute_command_callback("LEFT_DOOR_OPEN", car_controller)
-        execute_command_callback("RIGHT_DOOR_OPEN", car_controller)
-        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
-        execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
-        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
-        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
