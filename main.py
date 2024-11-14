@@ -379,7 +379,7 @@ def execute_command_callback(command, car_controller):
 
     elif command == "UNLOCK":
         # 차량의 상태가 'lock'일 때만 차량 잠금해제 가능
-        if not car_controller.get_lock_status() == True:
+        if car_controller.get_lock_status() == True:
             car_controller.unlock_vehicle()  # 차량잠금해제
 
 
