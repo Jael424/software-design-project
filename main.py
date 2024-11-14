@@ -275,6 +275,10 @@ DOOR_CLOSE_CONDITION = {False, "OPEN"}
 DOOR_LOCK_CONDITION = {False, "UNLOCKED", "CLOSED"}
 # 전체잠금, 차량 문 잠금, 문 상태, 속도
 DOOR_UNLOCK_CONDITION = {False, "LOCKED", "CLOSED", 0}
+# 전체잠금, 엔진 상태, 왼쪽 문 상태, 오른쪽 문 상태, 속도
+ACCELERATE_CONDITION = {False, True, "CLOSED", "CLOSED", True}
+# 전체잠금, 엔진 상태, 속도
+BRAKE_CONDITION = {False, True, True}
 
 
 def execute_command_callback(command, car_controller):
@@ -291,29 +295,36 @@ def execute_command_callback(command, car_controller):
                 if car_controller.get_speed() == 0:
                     car_controller.toggle_engine()  # 시동 OFF 가능
 
-
     # 송혜주
     elif command == "ACCELERATE":
-        if (car_controller.get_lock_status() == False and
-            car_controller.get_engine_status() == True and
-            car_controller.get_left_door_status() == "CLOSED" and
-            car_controller.get_right_door_status() == "CLOSED" and
-            car_controller.get_speed() < 120):
+        # 차량이 잠겨있지 않고, 엔진이 켜져있고, 왼쪽/오른쪽 문이 닫혀있고, 속도가 120 미만일 때 엑셀 페달 가동 가능
+        cur_accelerate_condition = set()
 
+        cur_accelerate_condition.add(car_controller.get_lock_status())
+        cur_accelerate_condition.add(car_controller.get_engine_status())
+        cur_accelerate_condition.add(car_controller.get_left_door_status())
+        cur_accelerate_condition.add(car_controller.get_right_door_status())
+        cur_accelerate_condition.add(car_controller.get_speed() < 120)
+
+        if cur_accelerate_condition == ACCELERATE_CONDITION:
             car_controller.accelerate()  # 속도 +10
 
             if (car_controller.get_speed() >= 20):  # 속도가 20일 때 차 문을 잠그도록 함.
                 car_controller.car.lock_left_door()
                 car_controller.car.lock_right_door()
 
-
-
     elif command == "BRAKE":
-        if (car_controller.get_lock_status() == False and
-            car_controller.get_engine_status() == True and
-            car_controller.get_speed() > 0):
+        # 차량이 잠겨있지 않고, 엔진이 켜져있고, 속도가 0 이상일 때 브레이크 페달 가동 가능
+        cur_brake_condition = set()
+
+        cur_brake_condition.add(car_controller.get_lock_status())
+        cur_brake_condition.add(car_controller.get_engine_status())
+        cur_brake_condition.add(car_controller.get_speed() > 0)
+
+        if cur_brake_condition == BRAKE_CONDITION:
             car_controller.brake()  # 속도 -10
 
+    
     # 주정윤
     elif command == "LOCK":
         # 차량의 상태가 'unlock'이며, 속도가 10미만일 때만 차량 잠금 가능
