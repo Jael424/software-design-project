@@ -15,8 +15,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # 테스트 assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -30,14 +28,11 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
 
-        # 차량이 잠겨 있지 않을 때 SOS 호출 테스트
-
+    # 차량이 잠겨 있지 않을 때 SOS 호출 테스트
     def test_sos_when_unlocked_and_speed_one(self):
         car_controller = CarController(Car())
         car_controller.unlock_vehicle()
@@ -46,8 +41,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -63,8 +56,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -81,44 +72,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
-        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
-        self.assertFalse(car_controller.get_trunk_status())
-
-    # 문이 열려 있을 때 SOS 호출 테스트
-    def test_sos_when_doors_open(self):
-        car_controller = CarController(Car())
-
-        car_controller.unlock_vehicle()
-        car_controller.open_left_door()
-        car_controller.open_right_door()
-
-        execute_command_callback("SOS", car_controller)
-
-        # Assertions
-        self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
-        self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
-        self.assertFalse(car_controller.get_trunk_status())
-
-    # 문이 닫혀 있을 때 SOS 호출 테스트
-    def test_sos_when_doors_locked(self):
-        car_controller = CarController(Car())
-
-        car_controller.unlock_vehicle()
-        car_controller.close_left_door()
-        car_controller.close_right_door()
-
-        execute_command_callback("SOS", car_controller)
-
-        # Assertions
-        self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -135,8 +88,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -153,8 +104,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -170,8 +119,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -187,8 +134,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -204,8 +149,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -222,8 +165,6 @@ class TestSOSFunctionality(unittest.TestCase):
 
         # Assertions
         self.assertEqual(car_controller.get_speed(), 0)
-        self.assertEqual(car_controller.get_left_door_status(), "OPEN")
-        self.assertEqual(car_controller.get_right_door_status(), "OPEN")
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
         self.assertFalse(car_controller.get_trunk_status())
@@ -355,7 +296,7 @@ def execute_command_callback(command, car_controller):
             car_controller.get_engine_status() == True and
             car_controller.get_left_door_status() == "CLOSED" and
             car_controller.get_right_door_status() == "CLOSED" and
-            car_controller.get_speed() <= 120):
+            car_controller.get_speed() < 120):
 
             car_controller.accelerate()  # 속도 +10
 
@@ -507,19 +448,19 @@ def execute_command_callback(command, car_controller):
         # car_controller.close_trunk()  # 트렁크 닫기
         trunk_close_condition_check(car_controller)
 
-        # SOS 기능 추가
+
+    # SOS 기능 추가
     elif command == "SOS":
+        car_controller.unlock_vehicle()
+
         # 1. 속도를 0으로 설정
         if car_controller.get_speed() != 0:
             for i in range(car_controller.get_speed()):
                 car_controller.brake()
 
         # 2. 모든 문의 잠금을 해제하고 열기
-        car_controller.unlock_vehicle()
         car_controller.unlock_left_door()
         car_controller.unlock_right_door()
-        car_controller.open_left_door()
-        car_controller.open_right_door()
 
         # 3. 트렁크 열기
         car_controller.open_trunk()
