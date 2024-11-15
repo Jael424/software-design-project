@@ -144,6 +144,47 @@ class TestSOSFunctionality(unittest.TestCase):
         # Assertions
         self.sos_conditions(car_controller)
 
+    # SOS 여러 번 호출
+    def test_sos_multiple(self):
+        car_controller = CarController(Car())
+
+        # 비정상적인 초기 상태 설정
+        car_controller.unlock_vehicle()
+        car_controller.toggle_engine()
+        car_controller.open_trunk()
+        car_controller.accelerate()
+
+        execute_command_callback("SOS", car_controller)
+        execute_command_callback("SOS", car_controller)
+
+        # 1차 Assertions
+        self.sos_conditions(car_controller)
+
+        execute_command_callback("SOS", car_controller)
+
+        # 2차 Assertions
+        self.sos_conditions(car_controller)
+
+    # 다양한 잘못된 상태에 있을 때의 경우 테스트(경계값 테스트)
+    def test_sos_invalid_state(self):
+        car_controller = CarController(Car())
+
+        # 비정상적인 상태 조합 설정
+        car_controller.unlock_vehicle()
+        car_controller.toggle_engine()
+        car_controller.open_trunk()
+        car_controller.lock_left_door()
+        car_controller.accelerate()
+        car_controller.open_left_door()
+        # 상태:
+        # 잠금 해제
+        # 엔진 켜짐, 트렁크 개방, 좌측 문 잠금, 속도 10km/h, 좌측 문 열림
+
+        execute_command_callback("SOS", car_controller)
+
+        # Assertions
+        self.sos_conditions(car_controller)
+
 
 class TestLockDoorFunctionality(unittest.TestCase):
     def test_lock_door_functionality(self):
