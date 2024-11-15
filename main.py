@@ -165,7 +165,7 @@ class TestSOSFunctionality(unittest.TestCase):
         # 2차 Assertions
         self.sos_conditions(car_controller)
 
-    # 다양한 잘못된 상태에 있을 때의 경우 테스트
+    # 다양한 잘못된 상태에 있을 때의 경우 테스트(경계값 테스트)
     def test_sos_invalid_state(self):
         car_controller = CarController(Car())
 
@@ -176,8 +176,9 @@ class TestSOSFunctionality(unittest.TestCase):
         car_controller.lock_left_door()
         car_controller.accelerate()
         car_controller.open_left_door()
-
-        print(car_controller.get_left_door_status())
+        # 상태:
+        # 잠금 해제
+        # 엔진 켜짐, 트렁크 개방, 좌측 문 잠금, 속도 10km/h, 좌측 문 열림
 
         execute_command_callback("SOS", car_controller)
 
