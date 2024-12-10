@@ -213,7 +213,7 @@ class TestLockDoorFunctionality(unittest.TestCase):
         execute_command_callback("UNLOCK", car_controller)
         execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
         execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
-        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("BRAKE ENGINE_BTN", car_controller)
         execute_command_callback("ACCELERATE", car_controller)
         execute_command_callback("ACCELERATE", car_controller)
         execute_command_callback("ACCELERATE", car_controller)
@@ -235,7 +235,7 @@ class TestLockDoorFunctionality(unittest.TestCase):
         # 속도가 0이 아닐때 문 잠금 해제 불가능
         execute_command_callback("LEFT_DOOR_LOCK", car_controller)
         execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
-        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("BRAKE ENGINE_BTN", car_controller)
         execute_command_callback("ACCELERATE", car_controller)
         execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
         execute_command_callback("RIGHT_DOOR_UNLOCK", car_controller)
@@ -276,6 +276,170 @@ class TestLockDoorFunctionality(unittest.TestCase):
         execute_command_callback("RIGHT_DOOR_LOCK", car_controller)
         self.assertEqual(car_controller.get_left_door_lock(), "UNLOCKED")
         self.assertEqual(car_controller.get_right_door_lock(), "UNLOCKED")
+
+unit_test_file_list_ON_True = [
+    ".\example_engin_for_unitTest_ON_1_True",
+    ".\example_engin_for_unitTest_ON_2_True",
+]
+unit_test_file_list_ON_False = [
+    ".\example_engin_for_unitTest_ON_3_False",
+    ".\example_engin_for_unitTest_ON_4_False",
+    ".\example_engin_for_unitTest_ON_5_False",
+    ".\example_engin_for_unitTest_ON_6_False",
+]
+
+unit_test_file_list_OFF_True = [
+    ".\example_engin_for_unitTest_OFF_2_True"
+]
+unit_test_file_list_OFF_False = [
+    ".\example_engin_for_unitTest_OFF_1_False"
+] # 유닛 테스트를 위한 입력값이 저장된 파일들
+
+def test_engin_functionality(self, error_file : list, file_list : list, expect : bool) -> list:
+        for file_path in file_list :
+            try:
+                unitTest_File = open(file_path, 'r')
+                commands = unitTest_File.read().splitlines()
+                # 유닛 테스트를 위한 명령어가 입력된 파일을 읽어오고, 각 줄의 명령어를 commands에 저장
+                car_controller = CarController(Car())
+
+                for command in commands :
+                    print(command)
+                    execute_command_callback(command, car_controller)
+                # 각 명령어를 execute_command_callback 함수를 통해 시행
+                print(file_path)
+                unitTest_File.close()
+                if expect :
+                    self.assertTrue(car_controller.get_engine_status())
+                else :
+                    self.assertFalse(car_controller.get_engine_status())
+                # 파일을 읽어온 뒤 유닛 테스트 실행
+
+            except FileNotFoundError:
+                print(f"Error: File '{file_path}' not found.")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                error_file.append(file_path) 
+                # 유닛 테스트에서 fail 발생할 경우 error_file 리스트에 해당 파일 이름 저장
+                # fail 발생 x
+
+class TestEnginFunctionality_file(unittest.TestCase):
+
+    def test_engin_functionality_ON_True(self):
+        error_file = []
+        test_engin_functionality(self, error_file, unit_test_file_list_ON_True, True)
+
+        if error_file : 
+            self.fail(msg=error_file) # fail 발생한 파일이 있을 경우 fail 발생
+
+    
+    def test_engin_functionality_ON_False(self):
+        error_file = []
+        test_engin_functionality(self, error_file, unit_test_file_list_ON_False, False)
+
+        if error_file :
+            self.fail(msg=error_file) # fail 발생한 파일이 있을 경우 fail 발생
+    
+
+    def test_engin_functionality_OFF_True(self):
+        error_file = []
+        test_engin_functionality(self, error_file, unit_test_file_list_OFF_True, True)
+
+        if error_file : 
+            self.fail(msg=error_file) # fail 발생한 파일이 있을 경우 fail 발생
+        
+    def test_engin_functionality_OFF_False(self):
+        error_file = []
+        test_engin_functionality(self, error_file, unit_test_file_list_OFF_False, False)
+
+        if error_file :
+            self.fail(msg=error_file) # fail 발생한 파일이 있을 경우 fail 발생
+
+
+class TestEngineFunctionality(unittest.TestCase):
+    # TESTCASE 1
+    def test_example_new_engin_1_fault(self):
+        car_controller = CarController(Car())
+
+        execute_command_callback("BRAKE ENGINE_BTN", car_controller)
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+
+        self.assertTrue(car_controller.get_engine_status(), "Engine ON")
+    
+    # TESTCASE 2
+    def test_example_new_engin_1(self):
+        car_controller = CarController(Car())
+
+        execute_command_callback("ENGINE_BTN BRAKE", car_controller)
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+        
+        self.assertFalse(car_controller.get_engine_status(), "Engine OFF")
+    
+    # TESTCASE 3
+    def test_example_new_engin_2_fault(self):
+        car_controller = CarController(Car())
+
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("BRAKE ENGINE_BTN", car_controller)
+        execute_command_callback("ACCELERATE", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("BRAKE", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+
+        self.assertTrue(car_controller.get_engine_status(), "Engine ON")
+    
+    # TESTCASE 4
+    def test_example_new_engin_2(self):
+        car_controller = CarController(Car())
+
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("ENGINE_BTN BRAKE", car_controller)
+        execute_command_callback("ACCELERATE", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("BRAKE", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+
+        self.assertFalse(car_controller.get_engine_status(), "Engine OFF")
+
+    # TESTCASE 5
+    def test_example_new_engin_3_fault(self):
+        car_controller = CarController(Car())
+
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("TRUNK_OPEN", car_controller)
+        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
+        execute_command_callback("LEFT_DOOR_OPEN", car_controller)
+        execute_command_callback("BRAKE ENGINE_BTN", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("LEFT_DOOR_CLOSE", car_controller)
+        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
+        execute_command_callback("TRUNK_CLOSE", car_controller)
+        execute_command_callback("BRAKE ENGINE_BTN", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+
+        self.assertTrue(car_controller.get_engine_status(), "Engine ON")
+
+    # TESTCASE 6
+    def test_example_new_engin_3(self):
+        car_controller = CarController(Car())
+
+        execute_command_callback("UNLOCK", car_controller)
+        execute_command_callback("TRUNK_OPEN", car_controller)
+        execute_command_callback("LEFT_DOOR_UNLOCK", car_controller)
+        execute_command_callback("LEFT_DOOR_OPEN", car_controller)
+        execute_command_callback("ENGINE_BTN BRAKE", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+        execute_command_callback("LEFT_DOOR_CLOSE", car_controller)
+        execute_command_callback("LEFT_DOOR_LOCK", car_controller)
+        execute_command_callback("TRUNK_CLOSE", car_controller)
+        execute_command_callback("ENGINE_BTN BRAKE", car_controller)
+        execute_command_callback("ENGINE_BTN", car_controller)
+
+        self.assertFalse(car_controller.get_engine_status(), "Engine OFF")
 
 
 # execute_command를 제어하는 콜백 함수
