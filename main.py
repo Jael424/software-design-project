@@ -401,7 +401,6 @@ class TestEngineFunctionality(unittest.TestCase):
         self.assertFalse(car_controller.get_engine_status(), "Engine OFF")
 
 
-
 # execute_command를 제어하는 콜백 함수
 # -> 이 함수에서 시그널을 입력받고 처리하는 로직을 구성하면, 알아서 GUI에 연동이 됩니다.
 
@@ -638,7 +637,6 @@ def execute_command_callback(command, car_controller):
             print("트렁크 닫기")
             # car_controller.close_trunk()  # 트렁크 닫기
             trunk_close_condition_check(car_controller)
-
 
         # SOS 기능 추가
         elif command == "SOS":
